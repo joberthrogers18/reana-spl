@@ -168,6 +168,12 @@ public class Analyzer {
     public IReliabilityAnalysisResults evaluateFeatureFamilyBasedReliability(RDGNode node, String dotOutput) throws CyclicRdgException {
         return featureFamilyBasedAnalyzerImpl.evaluateReliability(node, this.concurrencyStrategy, dotOutput);
     }
+    
+    public IReliabilityAnalysisResults evaluateFeatureFamilyProduct(RDGNode node) throws CyclicRdgException {
+    	System.out.println(node);
+    	return null;
+    }
+    
     /**
      * Evaluates the feature-family-based reliability function of an RDG node, based
      * on the reliabilities of the nodes on which it depends, but does not dump the
