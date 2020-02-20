@@ -52,6 +52,7 @@ import tool.PruningStrategyFactory;
 import tool.RDGNode;
 import tool.UnknownFeatureException;
 import tool.analyzers.IReliabilityAnalysisResults;
+import tool.analyzers.strategies.FeatureFamilyProduct;
 import tool.stats.CollectibleTimers;
 import tool.stats.IFormulaCollector;
 import tool.stats.IMemoryCollector;
@@ -141,7 +142,9 @@ public class CommandLineInterface {
 			results = evaluateReliability(analyzer::evaluateFamilyProductBasedReliability, rdgRoot, validConfigs);
 			break;
 		case FEATURE_FAMILY_PRODUCT:
-//			results = evaluateReliability(analyzer::evaluateFeatureFamilyProduct, rdgRoot, validConfigs);
+			results = analyzer.evaluateFeatureFamilyProduct(rdgRoot, validConfigs);
+//			System.out.println(results);
+			// evaluateReliability(analyzer::evaluateFeatureFamilyProduct, rdgRoot, validConfigs);
 			break;
 		case FEATURE_FAMILY:
 		default:

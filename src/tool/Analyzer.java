@@ -19,6 +19,7 @@ import tool.analyzers.buildingblocks.ConcurrencyStrategy;
 import tool.analyzers.strategies.FamilyBasedAnalyzer;
 import tool.analyzers.strategies.FamilyProductBasedAnalyzer;
 import tool.analyzers.strategies.FeatureFamilyBasedAnalyzer;
+import tool.analyzers.strategies.FeatureFamilyProduct;
 import tool.analyzers.strategies.FeatureProductBasedAnalyzer;
 import tool.analyzers.strategies.ProductBasedAnalyzer;
 import tool.stats.IFormulaCollector;
@@ -52,6 +53,7 @@ public class Analyzer {
     ProductBasedAnalyzer productBasedAnalyzerImpl;
     FamilyBasedAnalyzer familyBasedAnalyzerImpl;
     FamilyProductBasedAnalyzer familyProductBasedAnalyzerImpl;
+	private FeatureFamilyProduct featureFamilyProductImpl;
 
     /**
      * Creates an Analyzer which will follow the logical rules
@@ -115,6 +117,11 @@ public class Analyzer {
                                                                              this.modelChecker,
                                                                              this.timeCollector,
                                                                              this.formulaCollector);
+        this.featureFamilyProductImpl = new FeatureFamilyProduct(this.jadd,
+                this.featureModel,
+                this.modelChecker,
+                this.timeCollector,
+                this.formulaCollector);
     }
 
     /**
@@ -169,9 +176,8 @@ public class Analyzer {
         return featureFamilyBasedAnalyzerImpl.evaluateReliability(node, this.concurrencyStrategy, dotOutput);
     }
     
-    public IReliabilityAnalysisResults evaluateFeatureFamilyProduct(RDGNode node) throws CyclicRdgException {
-    	System.out.println(node);
-    	return null;
+    public IReliabilityAnalysisResults evaluateFeatureFamilyProduct(RDGNode node,  Stream<Collection<String>> configurations) throws CyclicRdgException {
+    	return this.featureFamilyProductImpl.evaluateReliability(node, this.concurrencyStrategy, configurations);
     }
     
     /**
