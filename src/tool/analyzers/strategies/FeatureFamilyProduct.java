@@ -1,6 +1,8 @@
 package tool.analyzers.strategies;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -71,18 +73,28 @@ public class FeatureFamilyProduct {
                 .collect(Collectors.toList());
 		
 		FDTMC model = node.getFDTMC();
-//		System.out.println(model);
 		 List<Component<String>> expressions = firstPhase.getReliabilityExpressions(dependencies, concurrencyStrategy);
-//		 List<Component<String>> expressions = firstPhase.getReliabilityExpressions(dependencies, concurrencyStrategy);;
-		Map<Collection<String>, Double> results = ProductIterationHelper.evaluate(configuration -> evaluateSingle(node,
-                configuration,
-	             dependencies),
-				configurations,
-				concurrencyStrategy);
-		
-//        
-//        System.out.println(results);
-		
+		 
+		 Map<String,String> nodeExp = new HashMap<String,String>();
+		 List<String> nodeAssetsString = new ArrayList<String>();
+		 
+		 for (Component<String> expression: expressions) {
+			 String[] currentAssets = expression.getAsset().split("/");
+			 String finalStr = "";
+			 for(int i = 0; i < currentAssets.length; i++) {				 
+				 if(currentAssets[i].contains("(")) {
+					 finalStr += currentAssets[i].substring(1, currentAssets[i].length() - 1) ;
+					 if(i != currentAssets.length - 1) {
+						 finalStr += "/";
+					 }
+				 } else {
+					 finalStr += currentAssets[i];
+				 }
+			 }
+			 nodeExp.put(expression.getId(), finalStr);
+		 }
+		 
+		System.out.println(nodeExp);
 		
 		return null;
 	}
@@ -90,9 +102,9 @@ public class FeatureFamilyProduct {
 	private Double evaluateSingle(RDGNode node, Collection<String> configuration, List<RDGNode> dependencies) throws UnknownFeatureException {
         List<Component<FDTMC>> models = RDGNode.toComponentList(dependencies);
         
-        for(Component<FDTMC> model: models) {
-        	System.out.println(model.getId());
-        }
+//        for(Component<FDTMC> model: models) {
+//        	System.out.println(model.getId());
+//        }
         // Lambda folding
         FDTMC rootModel = deriveFromMany(models, configuration);
         // Alpha

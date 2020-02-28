@@ -42,7 +42,6 @@ public class FeatureBasedFirstPhase {
      * @return
      */
     public List<Component<String>> getReliabilityExpressions(List<RDGNode> nodes, ConcurrencyStrategy concurrencyStrategy) {
-    	System.out.println("Teste");
         if (concurrencyStrategy == ConcurrencyStrategy.PARALLEL) {
             LOGGER.info("Performing model checking in parallel for each FDTMC.");
         }
