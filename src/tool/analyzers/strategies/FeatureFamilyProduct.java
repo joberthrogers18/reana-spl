@@ -120,8 +120,9 @@ public class FeatureFamilyProduct {
 				 }
 			 }
 			 nodeExp.put(expression.getId(), finalStr);
-			 System.out.println(expression.getPresenceCondition());
 		 }
+		 
+		 System.out.println(nodeExp.get("BSN"));
 		 
 		 System.out.println(nodeExp);
 		 
@@ -142,14 +143,22 @@ public class FeatureFamilyProduct {
 		 System.out.println(dependencesSizeMap);
 		 
 		 Map<String, Integer> dependencesSizeMap1 = sortByValue(dependencesSizeMap); 
-		 System.out.println(dependencesSizeMap1);
-//		 for (Entry<String, String> nodeCur : nodeExp.entrySet()) {
-//			String id = nodeCur.getKey();
-//			if(dependencesSizeMap.get(id) > 1) {
-//				
-//			}
-////			System.out.println(dependencesSizeMap.get(id));
-//		 }
+//		 System.out.println(dependencesSizeMap1);
+		 for (Entry<String, Integer> dependeceSize : dependencesSizeMap1.entrySet()) {
+			String id = dependeceSize.getKey();
+			if(dependencesSizeMap1.get(id) > 1) {
+				for(Entry<String, Integer> depone : dependencesSizeMap1.entrySet()) {		
+					if(dependencesSizeMap1.get(depone.getKey()) == 1) {
+//						System.out.println(depone.getKey());
+						if( nodeExp.get(id) .contains(depone.getKey())) {
+							nodeExp.put(id, nodeExp.get(id).replace(depone.getKey(), "((" + depone.getKey()  + "*" + nodeExp.get(depone.getKey()) + ")"  + "+" + "(1-" +  depone.getKey()  + "))" ));
+						}
+					}
+				}
+				dependencesSizeMap1.put(id, 1);
+			}
+		 }
+		 System.out.println(nodeExp.get("BSN"));
 		 
 		
 		return null;
