@@ -2,9 +2,14 @@ package tool.analyzers.strategies;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -64,6 +69,30 @@ public class FeatureFamilyProduct {
                     FDTMC::inline,
                     trivialFdtmc());
 	}
+	
+	 // function to sort hashmap by values 
+    public static HashMap<String, Integer> sortByValue(Map<String, Integer> dependencesSizeMap) 
+    { 
+        // Create a list from elements of HashMap 
+        List<Map.Entry<String, Integer> > list = 
+               new LinkedList<Map.Entry<String, Integer> >(dependencesSizeMap.entrySet()); 
+  
+        // Sort the list 
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() { 
+            public int compare(Map.Entry<String, Integer> o1,  
+                               Map.Entry<String, Integer> o2) 
+            { 
+                return (o1.getValue()).compareTo(o2.getValue()); 
+            } 
+        }); 
+          
+        // put data from sorted list to hashmap  
+        HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>(); 
+        for (Map.Entry<String, Integer> aa : list) { 
+            temp.put(aa.getKey(), aa.getValue()); 
+        } 
+        return temp; 
+    } 
 
 	public IReliabilityAnalysisResults evaluateReliability(RDGNode node, ConcurrencyStrategy concurrencyStrategy, Stream<Collection<String>> configurations) throws CyclicRdgException, UnknownFeatureException {
 		
@@ -76,7 +105,6 @@ public class FeatureFamilyProduct {
 		 List<Component<String>> expressions = firstPhase.getReliabilityExpressions(dependencies, concurrencyStrategy);
 		 
 		 Map<String,String> nodeExp = new HashMap<String,String>();
-		 List<String> nodeAssetsString = new ArrayList<String>();
 		 
 		 for (Component<String> expression: expressions) {
 			 String[] currentAssets = expression.getAsset().split("/");
@@ -92,9 +120,37 @@ public class FeatureFamilyProduct {
 				 }
 			 }
 			 nodeExp.put(expression.getId(), finalStr);
+			 System.out.println(expression.getPresenceCondition());
 		 }
 		 
-		System.out.println(nodeExp);
+		 System.out.println(nodeExp);
+		 
+		 Map<String,Integer> dependencesSizeMap = new HashMap<String,Integer>(); 
+		 
+		 for (Entry<String, String> nodeCur : nodeExp.entrySet()) {
+			    String[] auxExp = nodeCur.getValue().split("/");
+			    Integer sizeExpSplit = 0;
+			    if(auxExp[0].contains("*")) {
+			    	sizeExpSplit = auxExp[0].split("\\*").length;
+			    } else {
+			    	sizeExpSplit = 1;
+			    }
+			    
+			    dependencesSizeMap.put(nodeCur.getKey(), sizeExpSplit);
+			}
+		 
+		 System.out.println(dependencesSizeMap);
+		 
+		 Map<String, Integer> dependencesSizeMap1 = sortByValue(dependencesSizeMap); 
+		 System.out.println(dependencesSizeMap1);
+//		 for (Entry<String, String> nodeCur : nodeExp.entrySet()) {
+//			String id = nodeCur.getKey();
+//			if(dependencesSizeMap.get(id) > 1) {
+//				
+//			}
+////			System.out.println(dependencesSizeMap.get(id));
+//		 }
+		 
 		
 		return null;
 	}
